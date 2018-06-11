@@ -154,6 +154,11 @@ public class NotificationController {
         }
 
         Notification notification = localBuilder.build();
+        boolean shouldFilter = RecentNotificationCache.getInstance().shouldFilter(notification);
+        if (shouldFilter) {
+            return;
+        }
+
         manager.notify(id, notification);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
