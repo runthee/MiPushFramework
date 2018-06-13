@@ -27,4 +27,12 @@ public class NotificationItem {
         return content;
     }
 
+    @Override
+    public String toString() {
+        return "NotificationItem{" +
+                "packageName='" + packageName + '\'' +
+                ", title=" + title +
+                ", content=" + content +
+                '}';
+    }
 }

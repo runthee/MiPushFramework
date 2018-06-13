@@ -6,10 +6,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.LruCache;
 
+import me.pqpo.librarylog4a.Log4a;
+
 /**
  * @author zts
  */
 public class RecentNotificationCache {
+    private static final String TAG = RecentNotificationCache.class.getSimpleName();
 
 
     private volatile static RecentNotificationCache cache = null;
@@ -33,18 +36,21 @@ public class RecentNotificationCache {
 
     public void put(NotificationItem item) {
         cacheInstance.put(buildNotificationKey(item), item);
+        Log4a.i(TAG, String.format("put cache %s ", cacheInstance.toString()));
+
     }
 
-    public boolean shouldFilter(Notification notification) {
-        NotificationItem item = getNotificationItem("", notification);
+    public boolean hasNotified(NotificationItem item) {
+        Log4a.i(TAG, String.format("hasNotified cache %s ", cacheInstance.toString()));
         return cacheInstance.get(buildNotificationKey(item)) != null;
     }
 
     private static String buildNotificationKey(@NonNull NotificationItem item) {
-        int maxTitleLen = item.getTitle().length() < 10 ? item.getTitle().length() : 10;
-        int maxContentLen = item.getContent().length() < 20 ? item.getContent().length() : 20;
+        int maxTitleLen = item.getTitle().length() < 8 ? item.getTitle().length() : 8;
+        int maxContentLen = item.getContent().length() < 15 ? item.getContent().length() : 15;
         String title = item.getTitle().subSequence(0, maxTitleLen).toString();
         String content = item.getContent().subSequence(0, maxContentLen).toString();
+        Log4a.i(TAG, String.format("buildNotificationKey %s ", title + content));
         return title + content;
     }
 

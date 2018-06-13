@@ -15,10 +15,12 @@ import android.text.TextUtils;
 
 import java.util.ArrayList;
 
+import me.pqpo.librarylog4a.Log4a;
 import top.trumeet.common.cache.ApplicationNameCache;
 import top.trumeet.common.utils.NotificationUtils;
 
 import static com.xiaomi.push.service.MyMIPushNotificationHelper.createColorSubtext;
+import static com.xiaomi.xmsf.push.notification.RecentNotificationCache.getNotificationItem;
 import static top.trumeet.common.utils.NotificationUtils.getChannelIdByPkg;
 import static top.trumeet.common.utils.NotificationUtils.getGroupIdByPkg;
 
@@ -29,6 +31,7 @@ import static top.trumeet.common.utils.NotificationUtils.getGroupIdByPkg;
 
 public class NotificationController {
     private static final String ID_GROUP_APPLICATIONS = "applications";
+    private static final String TAG = NotificationController.class.getSimpleName();
 
     @TargetApi(26)
     public static void deleteOldNotificationChannelGroup(@NonNull Context context) {
@@ -154,8 +157,11 @@ public class NotificationController {
         }
 
         Notification notification = localBuilder.build();
-        boolean shouldFilter = RecentNotificationCache.getInstance().shouldFilter(notification);
-        if (shouldFilter) {
+
+        NotificationItem item = getNotificationItem("", notification);
+        boolean notified = RecentNotificationCache.getInstance().hasNotified(item);
+        Log4a.i(TAG, String.format("hasNotified %b  NotificationItem %s ", notified, item));
+        if (notified) {
             return;
         }
 
